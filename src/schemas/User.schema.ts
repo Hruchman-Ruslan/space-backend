@@ -1,15 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { createHash } from 'crypto';
 
 @Schema()
 export class User {
-  @Prop({ unique: true, required: true })
-  userName: string;
+  @Prop()
+  name: string;
 
-  @Prop({ required: false })
-  displayName?: string;
+  @Prop()
+  email: string;
 
-  @Prop({ required: false })
-  avatarUrl: string;
+  @Prop({ select: false })
+  password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre<User>('save', async function (next) {
+  try {
+    const hash = createHash('sha256');
+    hash.update(this.password);
+    this.password = hash.digest('hex');
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
