@@ -11,7 +11,5 @@ const { DB_HOST } = process.env;
 
 @Module({
   imports: [MongooseModule.forRoot(DB_HOST), UserModule],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
