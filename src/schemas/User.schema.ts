@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { createHash } from 'crypto';
+import { hash } from 'bcrypt';
 
 @Schema()
 export class User {
@@ -16,12 +16,6 @@ export class User {
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre<User>('save', async function (next) {
-  try {
-    const hash = createHash('sha256');
-    hash.update(this.password);
-    this.password = hash.digest('hex');
-    next();
-  } catch (error) {
-    next(error);
-  }
+  this.password = await hash(this.password, 10);
+  next();
 });

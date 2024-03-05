@@ -1,3 +1,3 @@
 import { User } from 'src/schemas';
 
-export type userResponseType = Omit<User, 'password'>;
+export type UserResponseType = Omit<User, 'password'>;
