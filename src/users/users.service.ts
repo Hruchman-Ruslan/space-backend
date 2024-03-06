@@ -1,11 +1,17 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 import { HttpError } from 'src/helpers';
 import { User } from 'src/schemas';
 import { CreateUserDto, LoginDto } from './dto';
 import { UserResponseType } from './type';
 import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
+
+dotenv.config();
+
+const { JWT_TOKEN } = process.env;
 
 @Injectable()
 export class UsersService {
@@ -37,6 +43,15 @@ export class UsersService {
     return {
       name: user.name,
       email: user.email,
+      token: this.generateJwt(user),
     };
+  }
+
+  generateJwt(user: User): string {
+    return sign({ email: user.email }, `${JWT_TOKEN}`);
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email });
   }
 }
