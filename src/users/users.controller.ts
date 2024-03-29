@@ -16,7 +16,7 @@ import { ExpressRequest } from './middlewares';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('users')
+  @Post('users/signup')
   async createUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserResponseType> {
@@ -24,7 +24,7 @@ export class UsersController {
     return this.usersService.buildUserResponse(user);
   }
 
-  @Post('users/login')
+  @Post('users/signin')
   async login(@Body() loginDto: LoginDto): Promise<UserResponseType> {
     const user = await this.usersService.loginUser(loginDto);
     return this.usersService.buildUserResponse(user);
